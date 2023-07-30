@@ -6,7 +6,8 @@ import ListHeaderCell from "./ListHeaderCell";
 
 import styles from "./List.module.css";
 
-const List = ({ rows }) => {
+const List = ({ rows,selectedItem,timestamps}) => {
+  // console.log(selectedItem)
   return (
     <table className={styles.container}>
       <thead>
@@ -15,19 +16,23 @@ const List = ({ rows }) => {
           <ListHeaderCell>Buy/Sell</ListHeaderCell>
           <ListHeaderCell>Country</ListHeaderCell>
           <ListHeaderCell>Order Submitted</ListHeaderCell>
-          <ListHeaderCell>Order Volume / USD</ListHeaderCell>
+          <ListHeaderCell>Order Volume / {selectedItem}</ListHeaderCell>
         </ListHeader>
       </thead>
       <tbody>
-        {rows.map((row) => (
-          <ListRow>
-            <ListRowCell>{row["&id"]}</ListRowCell>
-            <ListRowCell>{row.executionDetails.buySellIndicator}</ListRowCell>
-            <ListRowCell>{row.executionDetails.orderStatus}</ListRowCell>
-            <ListRowCell>{row.orderSubmitted}</ListRowCell>
-            <ListRowCell>{row.bestExecutionData.orderVolume.USD}</ListRowCell>
-          </ListRow>
-        ))}
+      {rows.map((row, index) => {
+          const orderTimestamp = timestamps.find((x) => x["&id"] === row["&id"]);
+          // console.log(orderTimestamp["&id"])
+          return (
+            <ListRow key={index}>
+              <ListRowCell>{row["&id"]}</ListRowCell>
+              <ListRowCell>{row.executionDetails.buySellIndicator}</ListRowCell>
+              <ListRowCell>{row.executionDetails.orderStatus}</ListRowCell>
+              <ListRowCell>{orderTimestamp? orderTimestamp.timestamps.orderSubmitted : ""}</ListRowCell>
+              <ListRowCell>{row.bestExecutionData.orderVolume[selectedItem]}</ListRowCell>
+            </ListRow>
+          );
+        })}
       </tbody>
     </table>
   );

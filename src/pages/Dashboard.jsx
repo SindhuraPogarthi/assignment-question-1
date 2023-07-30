@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 // Data
 import mockData from "../assets/data.json";
@@ -19,11 +19,29 @@ const Dashboard = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedOrderDetails, setSelectedOrderDetails] = useState({});
   const [selectedOrderTimeStamps, setSelectedOrderTimeStamps] = useState({});
+  const [filteredOrders, setFilteredOrders] = useState(mockData.results);
+
+
+  useEffect(() => {
+    
+    if (searchText.trim() === "") {
+      setFilteredOrders(mockData.results); 
+    } else {
+      const filtered = mockData.results.filter((data) =>
+        data["&id"].toLowerCase().includes(searchText.toLowerCase())
+      );
+      setFilteredOrders(filtered);
+    }
+    // console.log(filteredOrders)
+    // console.log(mockData.results)
+  }, [searchText]);
+  
+
 
   return (
     <div>
       <div className={styles.header}>
-        <HeaderTitle primaryTitle="Orders" secondaryTitle="5 orders" />
+        <HeaderTitle primaryTitle="Orders" secondaryTitle={`${filteredOrders.length} orders`} />
         <div className={styles.actionBox}>
           <Search
             value={searchText}
@@ -41,13 +59,14 @@ const Dashboard = () => {
           <Card
             cardData={selectedOrderDetails}
             title="Selected Order Details"
+           
           />
           <Card
             cardData={selectedOrderTimeStamps}
             title="Selected Order Timestamps"
           />
         </div>
-        <List rows={mockData.results} />
+        <List rows={filteredOrders} selectedItem={currency} timestamps={timestamps.results}/>
       </div>
     </div>
   );
