@@ -6,7 +6,7 @@ import ListHeaderCell from "./ListHeaderCell";
 
 import styles from "./List.module.css";
 
-const List = ({ rows,selectedItem,timestamps}) => {
+const List = ({ rows,selectedItem,timestamps,onchoose, setSectionFlexDirection}) => {
   // console.log(selectedItem)
   return (
     <table className={styles.container}>
@@ -24,7 +24,10 @@ const List = ({ rows,selectedItem,timestamps}) => {
           const orderTimestamp = timestamps.find((x) => x["&id"] === row["&id"]);
           // console.log(orderTimestamp["&id"])
           return (
-            <ListRow key={index}>
+            <ListRow key={index} onchoose={() => {
+              onchoose(row);
+              setSectionFlexDirection("row"); 
+            }}>
               <ListRowCell>{row["&id"]}</ListRowCell>
               <ListRowCell>{row.executionDetails.buySellIndicator}</ListRowCell>
               <ListRowCell>{row.executionDetails.orderStatus}</ListRowCell>

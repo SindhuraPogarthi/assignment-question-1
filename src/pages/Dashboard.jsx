@@ -20,18 +20,27 @@ const Dashboard = () => {
   const [selectedOrderDetails, setSelectedOrderDetails] = useState({});
   const [selectedOrderTimeStamps, setSelectedOrderTimeStamps] = useState({});
   const [filteredOrders, setFilteredOrders] = useState(mockData.results);
+  const [sectionFlexDirection, setSectionFlexDirection] = useState("column");
+
+  const handlechoose=(x)=>{
+    setSelectedOrderDetails(x.executionDetails)
+    console.log(selectedOrderDetails)
+    const selectedTimestamps = timestamps.results.find(
+      (item) => item["&id"] === x["&id"]
+    );
+    setSelectedOrderTimeStamps(selectedTimestamps.timestamps);
+  console.log(selectedOrderTimeStamps);
+  }
 
 
   useEffect(() => {
     
-    if (searchText.trim() === "") {
-      setFilteredOrders(mockData.results); 
-    } else {
+    
       const filtered = mockData.results.filter((data) =>
-        data["&id"].toLowerCase().includes(searchText.toLowerCase())
+        data["&id"].toLowerCase().includes(searchText.trim().toLowerCase())
       );
       setFilteredOrders(filtered);
-    }
+    
     // console.log(filteredOrders)
     // console.log(mockData.results)
   }, [searchText]);
@@ -55,18 +64,18 @@ const Dashboard = () => {
         </div>
       </div>
       <div className={styles.content}>
-        <div className={styles.section}>
+        <div className={styles.section} style={{flexDirection: sectionFlexDirection}}>
           <Card
             cardData={selectedOrderDetails}
             title="Selected Order Details"
-           
+          
           />
           <Card
             cardData={selectedOrderTimeStamps}
             title="Selected Order Timestamps"
           />
         </div>
-        <List rows={filteredOrders} selectedItem={currency} timestamps={timestamps.results}/>
+        <List rows={filteredOrders} selectedItem={currency} timestamps={timestamps.results} onchoose={handlechoose} setSectionFlexDirection={setSectionFlexDirection}/>
       </div>
     </div>
   );
